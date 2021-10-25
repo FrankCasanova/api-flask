@@ -1,30 +1,26 @@
-from flask import Flask, jsonify, request
-from werkzeug.wrappers import response
+from flask import Flask, request, render_template, redirect
 
-# Intitialise the app
 app = Flask(__name__)
 
-# Define what the app does
-@app.get("/greet")
+@app.get("/")
 def index():
     """
-    TODO:
-    1. Capture first name & last name
-    2. If either is not provided: respond with an error
-    3. If first name is not provided and second name is provided: respond with "Hello Mr <second-name>!"
-    4. If first name is provided byt second name is not provided: respond with "Hello, <first-name>!"
-    5. If both names are provided: respond with a question, "Is your name <fist-name> <second-name>
+    Render the home page privided under templates/index.html 
+    in the repository
     """
-    fname=request.args.get('fname')
-    lname=request.args.get('lname')
+    return render_template("index.html")
 
-    if not fname and not lname:
-        return jsonify({'status':'error'})
-    elif fname and not lname:
-        return jsonify({'data':f'Hello, {fname}'})    
-    elif lname and not fname:
-        return jsonify({'data':f'Hello, {lname}'})
-    else:
-        response={'data': f'Is your name {fname}{lname}'}    
-        
-    return jsonify(response)
+@app.get("/search")
+def search():
+    """
+    1. Capture the word that is being searched
+    2. Search for the word on Google and display results
+    """
+    args = request.args.get("q")
+    return redirect(f'https://google.com/search?q={args}')
+
+
+
+
+if __name__ == "__main__":
+    app.run()    
