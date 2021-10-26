@@ -28,19 +28,19 @@ def dictionary():
 
     #return an error querystring is malformed
     if not word:
-        return jsonify({'data': 'No a valid word or no word provided'})
+        return jsonify({'status': 'error', 'data': 'word not found'})
 
     #try to find an exact match
     definition = match_exact(word)
     if definition:
-        return jsonify({'data': definition })
+        return jsonify({'status': 'success','data': definition })
 
     #try to find an approximate match
     definitions = match_like(word)
     if definitions:
-        return jsonify({'data': definitions})
+        return jsonify({'status': 'partial','data': definitions})
     else:
-        return jsonify({'data': 'word not found'})
+        return jsonify({'status': 'error','data': 'word not found'})
 
         
         
