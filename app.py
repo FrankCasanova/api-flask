@@ -1,23 +1,42 @@
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, jsonify
+from werkzeug.wrappers import response
+from model.dbHandler import match_exact, match_like 
 
 app = Flask(__name__)
 
 @app.get("/")
 def index():
     """
-    Render the home page privided under templates/index.html 
-    in the repository
+    DEFAULT ROUTE
+    This method will
+    1. Provide usage instructions formatted as JSON
     """
-    return render_template("index.html")
+    response = {'usage': '/dict?=<word>'}
+    
+    return jsonify(response)
 
-@app.get("/search")
-def search():
+@app.get("/dict")
+def dictionary():
     """
-    1. Capture the word that is being searched
-    2. Search for the word on Google and display results
+   DEFAULT ROUTE
+    This method will
+    1. Accept a word from the request
+    2. Try to find an exact match and return it if found
+    3. If not found, find all approximate matches and return
     """
-    args = request.args.get("q")
-    return redirect(f'https://google.com/search?q={args}')
+    word = request.args.get('word')
+
+    if not word:
+        return jsonify({'data': 'No a valid word or no word provided'})
+
+    definition = match_exact(word)
+    if definition:
+        return jsonify({'data': definition })
+        
+
+    
+    return "TODO"
+     
 
 
 
