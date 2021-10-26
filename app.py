@@ -26,16 +26,27 @@ def dictionary():
     """
     word = request.args.get('word')
 
+    #return an error querystring is malformed
     if not word:
         return jsonify({'data': 'No a valid word or no word provided'})
 
+    #try to find an exact match
     definition = match_exact(word)
     if definition:
         return jsonify({'data': definition })
+
+    #try to find an approximate match
+    definitions = match_like(word)
+    if definitions:
+        return jsonify({'data': definitions})
+    else:
+        return jsonify({'data': 'word not found'})
+
+        
         
 
     
-    return "TODO"
+    
      
 
 
