@@ -10,6 +10,7 @@ def index():
     """
     return render_template("index.html")
 
+
 @app.get("/search")
 def search():
     """
@@ -19,7 +20,13 @@ def search():
     args = request.args.get("q")
     return redirect(f'https://google.com/search?q={args}')
 
-
+@app.get("/wiki/")
+def wiki():
+    """
+    challenge
+    """
+    args = request.args.get('q')
+    return redirect(f'https://en.wikipedia.org/wiki/{args}')
 
 
 if __name__ == "__main__":
