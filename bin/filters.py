@@ -3,7 +3,6 @@ import io
 
 def apply_filter(file: object, filter: str) -> object:
     """
-    TODO:
     1.Accept the image as file object, and the filter type as string
     2.Oopen the as an PIL Image object
     3.Apply the filter
@@ -11,10 +10,10 @@ def apply_filter(file: object, filter: str) -> object:
     5.Return the file object
     """
     image = Image.open(file)
-    image = image.filter(eval(f'ImageFilter.{filter.upper()}'))
-    
+    image = image.filter(eval(f"ImageFilter.{filter.upper()}"))
+
     file = io.BytesIO()
-    image.save(file, 'JPEG')
+    image.save(file, "JPEG")
     file.seek(0)
-    
+
     return file
