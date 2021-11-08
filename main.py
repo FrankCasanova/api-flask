@@ -23,7 +23,7 @@ filters_available = [
 ]
 
 @app.api_route('/', methods=['GET', 'POST'])
-def index():
+async def index():
     """
     Return the usage instructions that specifies
     1. which filters are available, and
