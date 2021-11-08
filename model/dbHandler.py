@@ -14,7 +14,7 @@ def match_exact(word: str) -> list:
     sql_query = "SELECT * from entries WHERE word=?"
 
     # Query the database for exact matches
-    match = db.execute(sql_query, (word,)).fetchall()
+    match = db.execute(sql_query, (word.capitalize(),)).fetchall()
     # Clone the connection to the database
     db.close()
 
