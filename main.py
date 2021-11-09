@@ -1,7 +1,8 @@
-from fastapi import responses
+from zipfile import ZipFile
+import io
 from bin.filters import apply_filter
-from typing import List, Optional
-from fastapi import FastAPI, File, UploadFile
+from typing import List
+from fastapi import FastAPI, File, UploadFile, Request, BackgroundTasks
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import StreamingResponse
 
@@ -37,7 +38,7 @@ async def index():
     return jsonable_encoder(response)
 
 @app.post('/filter')
-def image_filter(filter: str, image: UploadFile = File(...)):
+async def image_filter(filter: str, images: List[UploadFile] = File(...)):
     """
     TODO:
     1.  Checks if the provided filter is available, if not, return an error
@@ -51,6 +52,18 @@ def image_filter(filter: str, image: UploadFile = File(...)):
         response = {'error': 'incorrect filter'}
         return jsonable_encoder(response)
     
-    filtered_image = apply_filter(image.file, filter)
+    buffer = io.BytesIO()
+    zip_object = ZipFile(buffer, mode='w')
     
-    return StreamingResponse(filtered_image, media_type='image/jpeg')
+    
+    for image in images:
+        filtered_image = apply_filter(image.file, filter)
+        zip_object.writestr(image.filename, filtered_image.read())
+    
+    zip_object.close()
+    
+    buffer.seek(0)
+    response = StreamingResponse(buffer, media_type='application/zip')
+    response.headers['Content-Disposition'] = 'attachment; filename=images.zip'    
+    
+    return response
